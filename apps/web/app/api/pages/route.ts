@@ -1,0 +1,24 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getAllPages, savePage } from "@/lib/store/pages";
+import type { PageSchema } from "@/lib/schema/page-schema";
+
+export async function GET() {
+  try {
+    const pages = await getAllPages();
+    return NextResponse.json({ success: true, data: pages });
+  } catch (error) {
+    console.error("List pages error:", error);
+    return NextResponse.json({ error: "Failed to list pages" }, { status: 500 });
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const page: PageSchema = await req.json();
+    await savePage(page);
+    return NextResponse.json({ success: true, data: page });
+  } catch (error) {
+    console.error("Save page error:", error);
+    return NextResponse.json({ error: "Failed to save page" }, { status: 500 });
+  }
+}
